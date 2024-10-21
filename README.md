@@ -1,2 +1,0 @@
-# SPA
-Stock Price Analyzer
