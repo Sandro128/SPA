@@ -1,37 +1,67 @@
-Project Overview
+# Project Overview
 This project focuses on analyzing historical stock price data to identify local gains, detect anomalies, and maximize profit opportunities using computational algorithms. The key problems addressed include:
 
-Identifying Local Gains: Finding periods where stock prices exhibit significant increases for potential trading opportunities.
-Anomaly Detection: Detecting unusual price movements that could indicate market inefficiencies.
-Maximizing Gains: Utilizing algorithms to determine optimal buy and sell points for maximum profit.
-Goals of the Analysis
+- **Identifying Local Gains:** Finding periods where stock prices exhibit significant increases for potential trading opportunities.
+- **Anomaly Detection:** Detecting unusual price movements that could indicate market inefficiencies.
+- **Maximizing Gains:** Utilizing algorithms to determine optimal buy and sell points for maximum profit.
+
+## Goals of the Analysis
 The main objectives are:
 
-To pinpoint the top local gains in stock prices based on a specified percentage threshold.
-To visualize the identified gains and anomalies over time.
-To employ Kadane's Algorithm to find the maximum gain in a sequence of daily percentage changes.
-Type-Specific Considerations
-Financial Datasets
-Data Source: Historical stock price data obtained from Yahoo Finance via the yfinance library, covering the period from January 1, 2020, to January 1, 2024.
-Algorithms Used for Processing and Analysis
-Local Extrema Detection: Identifies local minima and maxima in stock prices using a sliding window approach for flexible timeframe analysis.
+1. To pinpoint the top local gains in stock prices based on a specified percentage threshold.
+2. To visualize the identified gains and anomalies over time.
+3. To employ Kadane's Algorithm to find the maximum gain in a sequence of daily percentage changes.
 
-Gain Calculation: Calculates percentage gains between buy and sell points, filtering out insignificant trades.
+## Type-Specific Considerations
+### Financial Datasets
+- **Data Source:** Historical stock price data obtained from Yahoo Finance via the yfinance library, covering the period from January 1, 2020, to January 1, 2024.
 
-Kadane's Algorithm: Finds the maximum gain from a sequence of daily percentage changes, helping identify optimal trading windows.
+## Algorithms Used for Processing and Analysis
+- **Local Extrema Detection:** Identifies local minima and maxima in stock prices using a sliding window approach for flexible timeframe analysis.
+- **Gain Calculation:** Calculates percentage gains between buy and sell points, filtering out insignificant trades.
+- **Kadane's Algorithm:** Finds the maximum gain from a sequence of daily percentage changes, helping identify optimal trading windows.
+- **Closest Pair of Points Algorithm:** Used for anomaly detection by identifying spatially close price pairs, aiding in detecting unusual price movements.
 
-Closest Pair of Points Algorithm: Used for anomaly detection by identifying spatially close price pairs, aiding in detecting unusual price movements.
+### Considerations on Sorting
+- **No Need for Merge Sort:** The yfinance library provides historical stock price data in a pre-sorted format by date, eliminating the need for sorting algorithms like Merge Sort.
 
-Considerations on Sorting
-No Need for Merge Sort: The yfinance library provides historical stock price data in a pre-sorted format by date, eliminating the need for sorting algorithms like Merge Sort.
-Libraries Used
-NumPy: Facilitates efficient numerical calculations and array manipulations for large datasets.
+## Libraries Used
+- **NumPy:** Facilitates efficient numerical calculations and array manipulations for large datasets.
+- **Pandas:** Provides powerful data structures for handling time series data, enabling easy manipulation and analysis.
+- **Matplotlib:** Used for visualizing stock price movements, buy/sell points, and anomalies.
+- **yfinance:** Offers a simple interface for accessing financial data from Yahoo Finance.
+- **SciPy:** Implements the KDTree for efficient spatial searching to detect anomalies based on proximity in price and time.
 
-Pandas: Provides powerful data structures for handling time series data, enabling easy manipulation and analysis.
+## Project Structure Overview
+### Class Summaries
+**StockAnalysis**
+- **Purpose:** Orchestrates the entire analysis process.
+- **Key Methods:**
+  - `load_data()`: Loads historical stock price data from yfinance.
+  - `identify_gains()`: Identifies local gains based on a specified percentage threshold.
+  - `detect_anomalies()`: Detects unusual price movements indicating market inefficiencies.
+  - `calculate_max_gain()`: Applies Kadane's Algorithm to find the maximum gain from daily percentage changes.
+  - `visualize_results()`: Visualizes identified gains and anomalies using Matplotlib.
 
-Matplotlib: Used for visualizing stock price movements, buy/sell points, and anomalies.
+**LocalGains**
+- **Purpose:** Identifies significant local gains in stock prices.
+- **Key Methods:**
+  - `find_local_maxima()`: Finds local maxima in stock prices using a sliding window approach.
+  - `calculate_percentage_gain()`: Calculates percentage gains between buy and sell points, filtering insignificant trades.
 
-yfinance: Offers a simple interface for accessing financial data from Yahoo Finance.
+**AnomalyDetector**
+- **Purpose:** Detects anomalies in stock price movements.
+- **Key Methods:**
+  - `detect_anomalies()`: Identifies unusual price movements.
+  - `closest_pair()`: Implements the closest pair of points algorithm for anomaly detection.
 
-SciPy: Implements the KDTree for efficient spatial searching to detect anomalies based on proximity in price and time.
+**MaxGainCalculator**
+- **Purpose:** Computes maximum gain from daily percentage changes.
+- **Key Methods:**
+  - `apply_kadane()`: Implements Kadane's Algorithm to find the maximum gain.
 
+## Installation
+1. Install Python from [python.org](https://www.python.org/).
+2. Install Required Libraries: Run the following commands in your terminal:
+   ```bash
+   pip install numpy pandas matplotlib yfinance scipy
