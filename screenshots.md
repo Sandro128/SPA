@@ -1,5 +1,5 @@
 ![path](./block_diagram.png)
 
-![path](./sample)
+![path](./sample.png)
 
-![path](./sample1)
+![path](./sample2.png)
