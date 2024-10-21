@@ -126,6 +126,25 @@ anomalies = find_anomalies(prices, percentage_threshold)
 # Use closest pair algorithm for anomaly detection
 closest_anomalies = closest_pair(prices, dates, threshold=0.05)
 
+# Calculate daily percentage changes for Kadane's Algorithm
+percentage_changes = np.diff(prices) / prices[:-1] * 100
+max_gain, max_start_index, max_end_index = kadane(percentage_changes)
+
+# Prepare to print gain information before the graph
+# Output percentage gain information for local gains
+if top_local_gains:
+    for i, (gain, buy_price, sell_price, buy_index, sell_index, time_diff, gain_rate) in enumerate(top_local_gains):
+        dollar_gain = sell_price - buy_price  # Calculate the dollar gain
+        print(f'Top Local Gain {i + 1}: ${dollar_gain:.2f} from ${buy_price:.2f} to ${sell_price:.2f} over {time_diff} days with gain rate: {gain_rate:.2f}')
+else:
+    print('No local gains found.')
+
+# Print the maximum gain using Kadane's Algorithm
+max_buy_price = prices[max_start_index]
+max_sell_price = prices[max_end_index + 1]  # Because of np.diff, sell point is the next price
+max_dollar_gain = max_sell_price - max_buy_price  # Calculate the dollar gain for the maximum gain
+print(f"Maximum Gain using Kadane's Algorithm: ${max_dollar_gain:.2f} from ${max_buy_price:.2f} to ${max_sell_price:.2f}")
+
 # Prepare for plotting
 plt.figure(figsize=(12, 6))
 plt.plot(stock_data['Date'], prices, label=f'{ticker} Close Price', color='blue')
@@ -177,15 +196,9 @@ for price1, price2, index1, index2, price_diff in closest_anomalies:
     plt.plot(stock_data['Date'][index1], price1, 'orange', marker='x', markersize=10, label='Closest Anomaly' if 'Closest Anomaly' not in plt.gca().get_legend_handles_labels()[1] else "")
     plt.plot(stock_data['Date'][index2], price2, 'orange', marker='x', markersize=10)
 
-# Calculate daily percentage changes for Kadane's Algorithm
-percentage_changes = np.diff(prices) / prices[:-1] * 100
-max_gain, max_start_index, max_end_index = kadane(percentage_changes)
-
 # Plot the buy and sell points for the maximum gain
-buy_price = prices[max_start_index]
-sell_price = prices[max_end_index + 1]  # Because of np.diff, sell point is the next price
-plt.plot(stock_data['Date'][max_start_index], buy_price, 'yo', markersize=10, label='Max Gain Buy Point')
-plt.plot(stock_data['Date'][max_end_index + 1], sell_price, 'yo', markersize=10, label='Max Gain Sell Point')
+plt.plot(stock_data['Date'][max_start_index], max_buy_price, 'yo', markersize=10, label='Max Gain Buy Point')
+plt.plot(stock_data['Date'][max_end_index + 1], max_sell_price, 'yo', markersize=10, label='Max Gain Sell Point')
 
 # Final plot adjustments
 plt.title(f'{ticker} Stock Prices with Local Buy/Sell Points and Anomalies')
@@ -206,13 +219,3 @@ plt.legend(handles, labels, loc='lower right')
 plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
-
-# Output percentage gain information for local gains
-if top_local_gains:
-    for i, (gain, buy_price, sell_price, buy_index, sell_index, time_diff, gain_rate) in enumerate(top_local_gains):
-        print(f'Top Local Gain {i + 1}: {gain:.2f}% from {buy_price:.2f} to {sell_price:.2f} over {time_diff} days with gain rate: {gain_rate:.2f}')
-else:
-    print('No local gains found.')
-
-# Print the maximum gain using Kadane's Algorithm
-print(f"Maximum Gain using Kadane's Algorithm: {max_gain:.2f}% from {buy_price:.2f} to {sell_price:.2f} between {max_start_index} and {max_end_index + 1}")
