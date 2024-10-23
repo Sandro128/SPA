@@ -1,116 +1,143 @@
-# Project Overview
-This project focuses on analyzing historical stock price data to identify local gains, detect anomalies, and maximize profit opportunities using computational algorithms. The key problems addressed include:
+Minimal Report for Stock Analysis Project
+1. Description of the Project
+The primary goal of this project is to analyze historical stock price data to identify key market trends, detect anomalies, and explore strategies for maximizing profit opportunities. By applying computational algorithms, the project focuses on gaining insights into stock performance over time and identifying significant events that impact market behavior.
 
-- **Identifying Local Gains**: Finding periods where stock prices exhibit significant increases for potential trading opportunities.
-- **Anomaly Detection**: Detecting unusual price movements that could indicate market inefficiencies.
-- **Maximizing Gains**: Utilizing algorithms to determine optimal buy and sell points for maximum profit.
+This analysis addresses challenges such as market volatility and unexpected price shifts by detecting local gains and anomalies, which can serve as early indicators for strategic investment decisions.
 
-## Goals of the Analysis
-The main objectives are:
+The goals of the project include:
 
-- To pinpoint the top local gains in stock prices based on a specified percentage threshold.
-- To visualize the identified gains and anomalies over time.
-- To employ Kadane's Algorithm to find the maximum gain in a sequence of daily percentage changes.
+Detecting local extrema (highs and lows) to understand potential entry and exit points for investments.
+Identifying anomalies caused by significant events (e.g., economic shifts, company announcements).
+Optimizing profit opportunities using algorithms like Kadane’s Algorithm for maximum subarray sum.
+Comparing trends using financial data visualization and generating meaningful insights from historical trends.
+2. Type-Specific Considerations
+Choice of Financial Dataset
+The dataset used for this analysis consists of historical stock price data retrieved from Yahoo Finance using the yfinance library. This dataset spans the period from January 1, 2020, to January 1, 2024, with a focus on the impact of significant global events (e.g., the COVID-19 pandemic and 2022 tech layoffs).
 
-## Type-Specific Considerations
-### Financial Datasets
-**Data Source**: Historical stock price data obtained from Yahoo Finance via the yfinance library, covering the period from January 1, 2020, to January 1, 2024.
+Stock ticker input: The program allows for dynamic input of stock tickers, enabling analysis across various companies or indices (e.g., QQQ).
+Date range and change threshold configuration: Constants are used to control the date range and anomaly detection thresholds, making the analysis more customizable.
+Algorithms Used for Processing and Analysis
+Merge Sort:
 
-### Algorithms Used for Processing and Analysis
-- **Local Extrema Detection**: Identifies local minima and maxima in stock prices using a sliding window approach for flexible timeframe analysis.
+Used to efficiently sort stock prices based on different parameters, enabling the quick identification of patterns.
+Kadane's Algorithm:
 
-- **Gain Calculation**: Calculates percentage gains between buy and sell points, filtering out insignificant trades.
+Applied to find the maximum profit possible by analyzing the maximum subarray sum of price changes over time.
+Local Extrema Detection:
 
-- **Kadane's Algorithm**: Finds the maximum gain from a sequence of daily percentage changes, helping identify optimal trading windows.
+Helps identify peaks and troughs in the stock price, highlighting areas where potential gains or losses occur.
+Closest Pair of Points Algorithm (for anomaly detection):
 
-- **Closest Pair of Points Algorithm**: Used for anomaly detection by identifying spatially close price pairs, aiding in detecting unusual price movements.
+This algorithm is employed to measure unusual clustering of prices or significant deviations, allowing the detection of outliers or anomalies in stock movements.
+Consideration of Market Events and Anomalies
+Given that stock prices are sensitive to external events (e.g., COVID-19 or tech layoffs), the algorithms are designed to handle unexpected spikes or dips. The system looks for significant deviations using the closest pair of points algorithm and generates alerts for anomalies.
 
-### Considerations on Sorting
-**No Need for Merge Sort**: The yfinance library provides historical stock price data in a pre-sorted format by date, eliminating the need for sorting algorithms like Merge Sort.
+Additionally, local extrema detection ensures the system can track periods of significant movement, such as rallies or crashes, which are relevant for both long- and short-term investors.
 
-## Libraries Used
-- **NumPy**: Facilitates efficient numerical calculations and array manipulations for large datasets.
+Structure of the code with diagram and comments
+![path](./block_diagram.png)
+Summary of Developed Functions
+1. find_local_extrema(prices, dates, window=7)
+Purpose:
+Identifies local minima and maxima (buy and sell points) in stock prices over a specified time window.
 
-- **Pandas**: Provides powerful data structures for handling time series data, enabling easy manipulation and analysis.
+Key Logic:
 
-- **Matplotlib**: Used for visualizing stock price movements, buy/sell points, and anomalies.
+A price point is considered a local minimum if it is lower than all surrounding prices within the window.
+A local maximum is found if a price point is higher than all prices within the same window.
+Returns two lists: one for buy points (local minima) and one for sell points (local maxima).
+2. get_top_local_gains(prices, dates, buy_points, sell_points, min_gain=3)
+Purpose:
+Calculates and retrieves the top 5 non-overlapping local gains between buy and sell points.
 
-- **yfinance**: Offers a simple interface for accessing financial data from Yahoo Finance.
+Key Logic:
 
-- **SciPy**: Implements the KDTree for efficient spatial searching to detect anomalies based on proximity in price and time.
+Computes the percentage gain between each pair of buy and sell points.
+Filters out gains below the minimum gain threshold (default is 3%).
+Sorts gains by percentage gain and gain rate.
+Selects the top 5 non-overlapping gains to avoid overlapping timeframes.
+3. find_anomalies(prices, percentage_threshold)
+Purpose:
+Detects anomalies in stock prices based on the percentage change between consecutive days.
 
-## Project Structure Overview
-### Class Summaries
-**StockAnalysis**
+Key Logic:
 
-- **Purpose**: Orchestrates the entire analysis process.
-- **Key Methods**:
-  - `load_data()`: Loads historical stock price data from yfinance.
-  - `identify_gains()`: Identifies local gains based on a specified percentage threshold.
-  - `detect_anomalies()`: Detects unusual price movements indicating market inefficiencies.
-  - `calculate_max_gain()`: Applies Kadane's Algorithm to find the maximum gain from daily percentage changes.
-  - `visualize_results()`: Visualizes identified gains and anomalies using Matplotlib.
+For each day, calculates the percentage change from the previous day.
+If the absolute change exceeds the percentage threshold (default set to 4%), the price is flagged as an anomaly.
+4. closest_pair(prices, dates, threshold=0.05)
+Purpose:
+Uses the closest pair of points algorithm to detect price anomalies.
 
-**LocalGains**
+Key Logic:
 
-- **Purpose**: Identifies significant local gains in stock prices.
-- **Key Methods**:
-  - `find_local_maxima()`: Finds local maxima in stock prices using a sliding window approach.
-  - `calculate_percentage_gain()`: Calculates percentage gains between buy and sell points, filtering insignificant trades.
+Converts dates to UNIX timestamps and stores both timestamps and prices in a KDTree.
+Finds points within the given threshold radius.
+If the price difference between two close points exceeds 5% of the original price, it is flagged as an anomaly.
+5. kadane(prices)
+Purpose:
+Implements Kadane’s Algorithm to find the maximum subarray sum, which identifies the maximum cumulative gain in stock prices.
 
-**AnomalyDetector**
+Key Logic:
 
-- **Purpose**: Detects anomalies in stock price movements.
-- **Key Methods**:
-  - `detect_anomalies()`: Identifies unusual price movements.
-  - `closest_pair()`: Implements the closest pair of points algorithm for anomaly detection.
+Iterates through the list of price changes, maintaining both a current maximum and a global maximum.
+Tracks the start and end indices of the maximum gain period.
+Returns the maximum gain value along with the corresponding start and end indices.
+6. Main Code Block
+Purpose:
 
-**MaxGainCalculator**
+Fetches historical stock data based on user input for the ticker symbol.
+Finds local extrema, calculates top local gains, and detects anomalies using different algorithms.
+Plots stock prices along with identified points (buy/sell, anomalies, and gains) for visualization.
 
-- **Purpose**: Computes maximum gain from daily percentage changes.
-- **Key Methods**:
-  - `apply_kadane()`: Implements Kadane's Algorithm to find the maximum gain.
-
-## Installation
-1. Install Python from python.org.
-2. Install Required Libraries: Run the following commands in your terminal:
-   ```bash
-   pip install numpy pandas matplotlib yfinance scipy
-Using the Program
-Run the Script: Execute the Python script with the provided code.
-Input Stock Ticker: When prompted, enter the stock ticker symbol (e.g., QQQ, SPY) in uppercase.
+Instructions for Using the System
 Constants
-window: Timeframe for local extrema (7 days).
-min_gain: Minimum gain percentage for top gains (3%).
-percentage_threshold: Anomaly detection threshold (4%).
-threshold: Distance for closest pair anomaly detection (0.05).
-Verification of Code Functionality and Findings
-This section outlines the verification of code functionality, detailing how the system operates in analyzing stock prices, detecting anomalies, and generating trend reports. It also discusses insights gained from the analysis, challenges encountered, and potential areas for improvement. Screenshots demonstrating the system in action will be provided later to enhance understanding.
+You can modify the following constants to customize your analysis:
 
-1. Code Functionality Verification
-Analyzing Stock Prices:
+START_DATE: Start date for data collection (default: "2020-01-01").
+END_DATE: End date for data collection (default: "2024-01-01").
+WINDOW_SIZE: Size of the window for local extrema detection (default: 7 days).
+MIN_GAIN_THRESHOLD: Minimum percentage gain for local gains (default: 3%).
+PERCENTAGE_THRESHOLD: Threshold for detecting anomalies (default: 4%).
+CLOSEST_PAIR_THRESHOLD: Distance threshold for closest pair anomaly detection (default: 0.05).
+TOP_GAIN_LIMIT: Maximum number of top gains to display (default: 5).
+Loading Data
 
-The program retrieves historical stock data for a specified ticker (e.g., QQQ) from January 1, 2020, to January 1, 2024. Users can easily input their desired stock ticker, and the system performs calculations to identify local minima and maxima, as well as compute gains based on user-defined thresholds.
+Input the stock ticker (e.g., QQQ) when prompted.
+Data will be downloaded from Yahoo Finance based on the defined date range.
+Analysis
 
-Detecting Anomalies:
+Local Extrema: Identifies buy/sell points using the specified window size.
+Top Gains: Displays the top non-overlapping gains exceeding the minimum gain threshold.
+Anomalies: Detects significant price changes exceeding the percentage threshold.
+Closest Pair: Finds anomalies based on the closest pair threshold.
+Kadane’s Algorithm
 
-The system implements two methods for detecting anomalies:
+Calculates the maximum continuous gain within the selected period.
+Generating Reports
 
-Percentage Change Method: This method identifies significant price fluctuations and marks them as anomalies. For instance, during the early months of the COVID-19 pandemic in 2020, QQQ experienced a dramatic price drop, which the system detected as an anomaly.
-Closest Pair Method: This algorithm flags close points in price changes as anomalies if the price difference exceeds a specified threshold. In 2022, multiple tech companies announced layoffs, leading to noticeable shifts in QQQ's price. These fluctuations were successfully captured by the anomaly detection algorithms.
-Sample Scenarios:
+Results are plotted with highlighted buy/sell points, anomalies, and top gains for easy visualization.
 
-Scenario 1: Analyzing stock prices for QQQ from 2020 to 2024 shows how local minima and maxima are identified. For instance, the system may detect a buy point in March 2020, followed by a sell point later in the year, illustrating a potential gain for investors.
-Scenario 2: The detection of anomalies during the pandemic (2020) and tech layoffs (2022) demonstrates the system's effectiveness in flagging unusual market behavior.
-Screenshots:
 
-Screenshots will be provided to illustrate the execution of the program and its output. These images will showcase the graphical representation of stock prices, identified buy and sell points, and highlighted anomalies. They will serve as visual confirmation of the algorithms' functionality and provide clarity on how data is processed and presented.
+Verification of Code Functionality
+Here are some example screenshots demonstrating the functionality of the program using the stock ticker QQQ. These screenshots illustrate how the program analyzes historical stock data, identifies local buy and sell points, detects anomalies, and visualizes the results. You will see the top local gains, anomalies highlighted on the graph, and the maximum gain calculated using Kadane's Algorithm. Notably, the analysis reveals a significant number of anomalies during 2020 when the COVID pandemic occurred and in 2022 during major tech layoffs, providing a clear view of the stock's performance and potential investment opportunities.
+![path](./sample.png)
+![path](./sample2.png)
+![path](./sample3.png)
 
-2. Discussion of Findings
-Insights Gained: The analysis revealed how external factors, such as the COVID-19 pandemic and economic conditions leading to layoffs, significantly impacted stock prices. Understanding these influences can help investors make informed decisions based on historical trends.
+Discussion of Findings
+Insights Gained:
 
-Challenges Faced: One challenge encountered during implementation was ensuring the accuracy of anomaly detection algorithms, particularly in distinguishing between normal price fluctuations and genuine anomalies. Adjusting thresholds required careful consideration of market conditions.
+The analysis identified significant local gains and anomalies in stock prices, particularly during notable market events (e.g., pandemic fluctuations).
+The combination of local extrema and anomaly detection provided a comprehensive view of potential investment opportunities.
+Challenges Faced:
 
-Limitations: The current system may not account for all external variables influencing stock prices, such as macroeconomic indicators or global events. This could limit the predictive power of the analysis.
+Implementing the closest pair algorithm for anomaly detection required careful handling of large datasets and performance considerations.
+Adjusting parameters (e.g., window size, gain thresholds) to optimize results required iterative testing and fine-tuning.
+Limitations:
 
-Areas for Improvement: Future enhancements could include integrating additional data sources (e.g., economic indicators), refining anomaly detection algorithms, and implementing machine learning techniques to improve the accuracy of predictions. User feedback mechanisms could also be added to help tailor the analysis to specific investor needs.
+The model relies on historical data, which may not accurately predict future performance due to market volatility.
+The effectiveness of anomaly detection is sensitive to the chosen thresholds and may require customization based on specific stock behavior.
+Areas for Improvement:
+
+Integrating machine learning techniques for more robust anomaly detection and prediction models.
+Expanding the system to include real-time data analysis and alerts for active trading opportunities.
