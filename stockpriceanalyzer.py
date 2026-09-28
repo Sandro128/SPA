@@ -93,8 +93,16 @@ def kadane(prices):
 ticker = input("Enter the stock ticker (e.g., QQQ, SPY): ").upper()
 stock_data = yf.download(ticker, start=START_DATE, end=END_DATE)
 
+if stock_data.empty:
+    raise SystemExit(f"No historical data found for ticker '{ticker}'.")
+
 stock_data.reset_index(inplace=True)
-prices = stock_data['Close'].values
+close_data = stock_data['Close']
+if isinstance(close_data, pd.DataFrame):
+    if close_data.shape[1] != 1:
+        raise ValueError(f"Expected one closing-price column for ticker '{ticker}'.")
+    close_data = close_data.iloc[:, 0]
+prices = close_data.to_numpy(dtype=float).reshape(-1)
 dates = stock_data['Date']
 
 local_buy_points, local_sell_points = find_local_extrema(prices, dates)
@@ -147,4 +155,3 @@ plt.ylabel('Price')
 plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
-
